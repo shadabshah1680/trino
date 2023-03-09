@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: presto-amd-service
+  labels:
+    app: presto-amd-service
+    dns: route53
+  annotations:
+    domainName: "amd.kops.example.com"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+spec:
+  selector:
+    app: presto-amd
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: presto-arm-service
+  labels:
+    app: presto-arm-service
+    dns: route53
+  annotations:
+    domainName: "arm.kops.example.com"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+spec:
+  selector:
+    app: presto-arm
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+  type: LoadBalancer
