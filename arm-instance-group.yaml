@@ -1,12 +1,11 @@
-api Version: v1
-kind: Namespace
-metadata:
-  name: arm-namespace
----
+# api Version: v1
+# kind: Namespace
+# metadata:
+#   name: arm-namespace
+# ---
 apiVersion: kops.k8s.io/v1alpha2
 kind: InstanceGroup
 metadata:
-  namespace: arm-namespace
   labels:
     kops.k8s.io/cluster: k8s-cluster-shadab.groveops.net 
     node-group: graviton
@@ -25,3 +24,5 @@ spec:
   role: Node
   subnets:
   - us-west-2a
+  rootVolumeSize: 100
+  rootVolumeType: gp2

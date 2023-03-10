@@ -3,13 +3,12 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
-    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   name: trino-coordinator
-  namespace: arm-namespace
 spec:
   ports:
     - name: client
-      port: 8086
+      port: 8080
   type: LoadBalancer
   selector:
     app: trino-coordinator
@@ -18,7 +17,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: trino-coordinator
-  namespace: arm-namespace
   labels:
     app: trino-coordinator
 spec:
@@ -39,18 +37,21 @@ spec:
          cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
       nodeSelector:
-        name: arm-node-group
+        name: amd-node-group
       containers:
         - name: trino-arm-container
-          image: trinodb/trino:latest
+          image: lewuathe/trino-coordinator:354
           ports:
-            - containerPort: 8086
+            - containerPort: 8080
           env:
-            - name: trino_CONF_COORDINATOR
-              value: "true"
-            - name: trino_CONF_HTTP_HOST
+            - name: discovery_uri
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: trino_CONF_HTTP_PORT
-              value: "8086"        
+            - name: node_id
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          command: ["/bin/sh", "-c"]
+          args:
+            - "./scripts/trino.sh http://$discovery_uri:8080 $node_id"

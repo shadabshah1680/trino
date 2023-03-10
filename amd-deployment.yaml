@@ -16,15 +16,14 @@ spec:
         name: amd-node-group
       containers:
       - name: trino-amd-container
-        image: trinodb/trino:latest
-        ports:
-        - containerPort: 8080
+        image: lewuathe/trino-worker:354
         env:
-          - name: MY_NODE_NAME
+          - name: discovery_uri
+            value: trino-coordinator.default.svc.cluster.local
+          - name: node_id
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-          - name: TRINO_CONF_COORDINATOR
-            value: "false"
-          - name: TRINO_CONF_HTTP_HOST
-            value: "trino-coordinator.arm-namespace.svc.cluster.local"
+        command: ["/bin/sh", "-c"]
+        args:
+          - "./scripts/trino.sh http://$discovery_uri:8080 $node_id"

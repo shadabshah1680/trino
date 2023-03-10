@@ -38,7 +38,7 @@
 - kubectl apply -k .
 
 -----------------------------------------------------------------------------------------------------------
-kops delete cluster --name=k8s-cluster-shadab.groveops.net   --state=s3://kops-state-store-new   --cloud=aws    --zones=us-west-2a,us-west-2b   --node-count=0   --dns=public
+kops create cluster --name=k8s-cluster-shadab.groveops.net   --state=s3://kops-state-store-new   --cloud=aws    --zones=us-west-2a,us-west-2b   --node-count=1   --dns=public
 kops create -f arm-instance-group.yaml
 kops update cluster --name k8s-cluster-shadab.groveops.net --yes --admin
 export NAME=k8s-cluster.example.com
@@ -52,4 +52,9 @@ kops export kubeconfig --admin
 kubectl run -it --rm debug --image=busybox --restart=Never --namespace=default -- nslookup trino-coordinator.arm-namespace.svc.cluster.local
 
 service_name.namespace.svc.cluster.local
-my_trino.default.svc.cluster.local
+trino-coordinator.default.svc.cluster.local
+#!/bin/bash
+sudo apt update -y
+sudo apt install docker.io unzip -y 
+arm ami name: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-20210325
+amd ami name:

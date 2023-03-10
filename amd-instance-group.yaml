@@ -20,3 +20,5 @@ spec:
   role: Node
   subnets:
   - us-west-2b
+  rootVolumeSize: 50
+  rootVolumeType: gp2
