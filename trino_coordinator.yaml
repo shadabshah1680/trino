@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  name: trino-coordinator
+  namespace: arm-namespace
+spec:
+  ports:
+    - name: client
+      port: 8086
+  type: LoadBalancer
+  selector:
+    app: trino-coordinator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-coordinator
+  namespace: arm-namespace
+  labels:
+    app: trino-coordinator
+spec:
+  selector:
+    matchLabels:
+      app: trino-coordinator
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: trino-coordinator
+      annotations:
+         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+      nodeSelector:
+        name: arm-node-group
+      containers:
+        - name: trino-arm-container
+          image: trinodb/trino:latest
+          ports:
+            - containerPort: 8086
+          env:
+            - name: trino_CONF_COORDINATOR
+              value: "true"
+            - name: trino_CONF_HTTP_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: trino_CONF_HTTP_PORT
+              value: "8086"        

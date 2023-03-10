@@ -38,8 +38,18 @@
 - kubectl apply -k .
 
 -----------------------------------------------------------------------------------------------------------
-kops delete cluster --name=k8s-cluster.example.com   --state=s3://kops-state-store-new   --cloud=aws    --zones=us-west-2a,us-west-2b   --node-count=2   --dns=private
-kops update cluster --name k8s-cluster.example.com --yes --admin
+kops delete cluster --name=k8s-cluster-shadab.groveops.net   --state=s3://kops-state-store-new   --cloud=aws    --zones=us-west-2a,us-west-2b   --node-count=0   --dns=public
+kops create -f arm-instance-group.yaml
+kops update cluster --name k8s-cluster-shadab.groveops.net --yes --admin
 export NAME=k8s-cluster.example.com
 export KOPS_STATE_STORE=s3://kops-state-store-new
 kubectl get nodes --show-labels
+kubectl create namespace arm-namespace
+kubectl apply -f arm-deployments.yaml -n arm-namespace
+kops delete instance i-03777cbb12ff025ab --yes
+kops export kubeconfig --admin
+
+kubectl run -it --rm debug --image=busybox --restart=Never --namespace=default -- nslookup trino-coordinator.arm-namespace.svc.cluster.local
+
+service_name.namespace.svc.cluster.local
+my_trino.default.svc.cluster.local

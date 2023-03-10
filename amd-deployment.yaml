@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-deployment-amd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trino-amd
+  template:
+    metadata:
+      labels:
+        app: trino-amd
+    spec:
+      nodeSelector:
+        name: amd-node-group
+      containers:
+      - name: trino-amd-container
+        image: trinodb/trino:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: TRINO_CONF_COORDINATOR
+            value: "false"
+          - name: TRINO_CONF_HTTP_HOST
+            value: "trino-coordinator.arm-namespace.svc.cluster.local"

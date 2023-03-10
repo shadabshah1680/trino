@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: presto-amd-service
+  name: trino-amd-service
   labels:
-    app: presto-amd-service
+    app: trino-amd-service
     dns: route53
   annotations:
-    domainName: "amd.kops.example.com"
+    domainName: "amd.k8s-cluster-shadab.groveops.net"
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
 spec:
   selector:
-    app: presto-amd
+    app: trino-amd
   ports:
     - name: http
       port: 8080
@@ -20,16 +20,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: presto-arm-service
+  name: trino-arm-service
   labels:
-    app: presto-arm-service
+    app: trino-arm-service
     dns: route53
   annotations:
-    domainName: "arm.kops.example.com"
+    domainName: "arm.k8s-cluster-shadab.groveops.net"
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
 spec:
   selector:
-    app: presto-arm
+    app: trino-arm
   ports:
     - name: http
       port: 8080

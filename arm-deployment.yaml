@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-deployment-arm
+  namespace: arm-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trino-arm
+  template:
+    metadata:
+      labels:
+        app: trino-arm
+    spec:
+      nodeSelector:
+        name: arm-node-group
+      containers:
+      - name: trino-arm-container
+        image: trinodb/trino:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: TRINO_CONF_COORDINATOR
+            value: "false"
+          - name: TRINO_CONF_HTTP_HOST
+            value: "trino-coordinator.arm-namespace.svc.cluster.local"
