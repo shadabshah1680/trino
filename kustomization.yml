@@ -1,0 +1,6 @@
+resources:
+  - trino-coordinator.yaml
+  - trino-worker-amd-deployment.yaml
+  - trino-worker-arm-deployment.yaml
+  - trino-worker-amd2-deployment.yaml
+

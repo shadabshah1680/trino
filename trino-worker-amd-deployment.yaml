@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: trino-deployment-amd
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: trino-amd
@@ -20,10 +20,10 @@ spec:
         env:
           - name: discovery_uri
             value: trino-coordinator.default.svc.cluster.local
-          - name: node_id
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
+          # - name: node_id
+          #   valueFrom:
+          #     fieldRef:
+          #       fieldPath: spec.nodeName
         command: ["/bin/sh", "-c"]
         args:
-          - "./scripts/trino.sh http://$discovery_uri:8080 $node_id"
+          - "./scripts/trino.sh http://$discovery_uri:8080 "

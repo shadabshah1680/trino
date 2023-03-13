@@ -22,9 +22,7 @@ spec:
           - name: discovery_uri
             value: trino-coordinator.default.svc.cluster.local
           - name: node_id
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
+            value: "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)"
         command: ["/bin/sh", "-c"]
         args:
           - "./scripts/trino.sh http://$discovery_uri:8080 $node_id"

@@ -38,23 +38,23 @@
 - kubectl apply -k .
 
 -----------------------------------------------------------------------------------------------------------
-kops create cluster --name=k8s-cluster-shadab.groveops.net   --state=s3://kops-state-store-new   --cloud=aws    --zones=us-west-2a,us-west-2b   --node-count=1   --dns=public
+kops create cluster --name=kops-shadab.groveops.net   --state=s3://shadab-kops-states   --cloud=aws    --zones=us-west-2a,us-west-2b   --node-count=1   --dns=public
 kops create -f arm-instance-group.yaml
-kops update cluster --name k8s-cluster-shadab.groveops.net --yes --admin
-export NAME=k8s-cluster.example.com
-export KOPS_STATE_STORE=s3://kops-state-store-new
+kops update cluster --name kops-shadab.groveops.net --yes --admin
+export NAME=kops-shadab.groveops.net
+export KOPS_STATE_STORE=s3://shadab-kops-states
 kubectl get nodes --show-labels
 kubectl create namespace arm-namespace
 kubectl apply -f arm-deployments.yaml -n arm-namespace
 kops delete instance i-03777cbb12ff025ab --yes
-kops export kubeconfig --admin
+kops export kubeconfig clustername --admin
 
-kubectl run -it --rm debug --image=busybox --restart=Never --namespace=default -- nslookup trino-coordinator.arm-namespace.svc.cluster.local
+kubectl run -it --rm debug --image=busybox --restart=Never --namespace=default -- nslookup trino-coordinator.default.svc.cluster.local
 
 service_name.namespace.svc.cluster.local
 trino-coordinator.default.svc.cluster.local
 #!/bin/bash
 sudo apt update -y
 sudo apt install docker.io unzip -y 
-arm ami name: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-20210325
+arm ami name: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-20210325 #for building images
 amd ami name:

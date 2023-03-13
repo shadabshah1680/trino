@@ -3,7 +3,7 @@ apiVersion: kops.k8s.io/v1alpha2
 kind: InstanceGroup
 metadata:
   labels:
-    kops.k8s.io/cluster: k8s-cluster-shadab.groveops.net 
+    kops.k8s.io/cluster: kops-shadab.groveops.net 
     node-group: amd
     name: amd-node-group
   name: amd-nodes-us-west-2b
