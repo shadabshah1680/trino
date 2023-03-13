@@ -4,7 +4,7 @@ metadata:
   name: trino-deployment-arm
   namespace: arm-namespace
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: trino-arm
@@ -22,7 +22,9 @@ spec:
           - name: discovery_uri
             value: trino-coordinator.default.svc.cluster.local
           - name: node_id
-            value: "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)"
+            valueFrom:
+              fieldRef:
+                fieldPath:   metadata.name
         command: ["/bin/sh", "-c"]
         args:
           - "./scripts/trino.sh http://$discovery_uri:8080 $node_id"

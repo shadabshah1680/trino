@@ -20,10 +20,6 @@ spec:
         env:
           - name: discovery_uri
             value: trino-coordinator.default.svc.cluster.local
-          # - name: node_id
-          #   valueFrom:
-          #     fieldRef:
-          #       fieldPath: spec.nodeName
         command: ["/bin/sh", "-c"]
         args:
           - "./scripts/trino.sh http://$discovery_uri:8080 "
